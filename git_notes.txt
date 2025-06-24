@@ -7,8 +7,18 @@
             - one submittion carries multiple files.
         > add multiple files with one add:
             (e.g.
-                git add file1.txt file2.txt
-                git add file3.txt                   )
+                $ git add file1.txt file2.txt
+                $ git add file3.txt                     )
+        > note that git can ONLY understand the files
+            and changes in files in TXT types, which 
+            means binary files (pictures, videos, 
+            Microsoft Words...) are not tractable for
+            git. 
+        > by the way, DO NOT USE NOTEBOOK in Microsoft 
+            system to edit your file!!! 
+            - a hexadecimal(0xffffff-like) char at the 
+            beginning of each file, which may cause 
+            problems.
     
     git commit -m <message>
         > -m for "message": remark for this committing.
@@ -16,13 +26,128 @@
             both you and others on painful debugging.
             The message SHOULD be put in "".
             (e.g.
-                git commit -m "wrote a readme file" )
+                $ git commit -m "wrote a readme file"   )
         > bash will return situation of the files in 
             the repository: 
             (e.g.
                 x file changed, y insertations(+)
-                create mode n readme.txt            )
+                create mode n readme.txt                )
             but detailed changes inside the files are 
             absent.
     
+    git status
+        > check the current state of the branch master 
+            in repository, showing what changes not yet
+            staged for commit, what changes staged to 
+            be committed...
+        > if nothing changed and commit load empty, 
+            then that implies "working tree clean",
+            as stated by bash.
+        > guides to continue adding / discard changes
+            will be shown as well.
     
+    git diff <filename.filetype>
+        > if changes (compare with newest version in 
+            repository) exist in the working tree, then it 
+            will show the detailed changes (b) compared 
+            with the last version (a) committed
+        > if no change between contiguous commit, then 
+            no reply will you derive.
+        > q for quit - if the diff reading finished, tap q.
+    
+    git log
+        > bash will output the detailed changes in every
+            version you submit the files, with commit id,
+            author, date, and changes in the files.
+        > remarks of each commit attached.
+        > try to use following line to abridge the output:
+            (e.g.
+                $ git log --pretty=oneline
+                #numbers:id_of_commit# (HEAD -> master) remarks
+                #numbers:id_of_commit# remarks
+                #numbers:id_of_commit# remarks
+             ...                                               )
+    
+    git reset --<hard/soft> <HEAD^/HEAD~n>
+        > --hard for resetting to last version committed state
+            --soft for resetting to last version uncommitted state
+            --mixed for resetting to last version added state
+        > HEAD^ for last version (HEAD = current version)
+            HEAD^^ for last two version, an so on...
+            HEAD~n for last n version, implying the version
+            you want to go back
+        > after reset to old version, the versions 
+            amid the old and new discarded. But, 
+            you can still go to those version with 
+            just the first few digits of that commit id.
+            - ids are usually 40 digits hexadecimal.
+            (e.g.
+                $ git reset --hard HEAD^
+                HEAD is now at <commit_id> remark
+                $ git reset --hard 1094a
+                HEAD is now at 1094...(<commit_id>) remark  )
+    
+    git reflog
+        > recording every command line you input 
+            -> for finding the commit id you want
+            use it to find the new version if you want to 
+            go back to new version from your retreated one.
+    
+    git checkout -- <filename.filetype>
+        > withdraw (i.e. discard) all the changes of the file 
+            <filename.filetype> in the working_directory, 
+            with two cases: 
+            1` the file haven't been putin stage after changes
+                -> after withdraw: same as repository
+            2` the file have been putin stage after changes
+                -> after withdraw: same as stage version
+        > use the version in repository in replace the one in 
+            working_directory.
+        > "--" is IMOPRTANT!!! Otherwise: switch to other branch
+    
+    rm <filename.filetype>
+        > remove the selected file in stage 
+            (equivalent to remove explicitly in laptop folder)
+    
+    git rm <filename.filetype>
+        > remove manually first then use this code is equivalent
+            to git add <filename.filetype>
+        > use git commit -m "remove <filename.filetype>" to 
+            remove the file sent in repository
+        > if a file had been sent to repository, never worring
+            mis-deleting. 
+        > but CAUTION! Last change will discard. Only newest 
+            version resumable.
+
+2 Git architecture:
+    working directory (gong1 zuo4 qu1): 
+        the file which has the .git (hidden) file
+        visible in laptop interface
+        .git not part of working directory, but hidden 
+        in that folder.
+    
+    repository (ban2 ben3 ku4):
+        the .git file
+        containing many stuffs, including stage (i.e. index,
+        zan3 cun2 qu1), the first branch master, pointer HEAD
+        pointing to master.
+        
+        diagram representation:
+        __working_directory__    __repository____________________
+        |  folder           |    |  __stage__  HEAD->__master_  |
+        |  |-file -----------add--->| folder |       | folder  ||
+        |  |-file           |    |  | |-file--commit-->|-file  ||
+        |  |-file           |    |  | |-file |       | |-file  ||
+        |  |-folder         |    |  | |-file |       | |-file  ||
+        |     |-file        |    |  |        |       | |-folder||
+        |     |-file        |    |  |        |       |   |-file||
+        |                   |    |   \______/        |   |-file||
+         \_________________/      \___________________\_______//
+    
+    stage (zan3 cun2 qu1):
+        files changes to be submitted will all be put in stage;
+        changes in stage submitted at once.
+        Basically, "$ git status" is for check status of stage.
+        Once committed, stage is clean.
+
+
