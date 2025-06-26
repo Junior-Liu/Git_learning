@@ -153,6 +153,7 @@ Basic functions of git:
             Are you sure you want to continue connecting (yes/no)?yes
             Warning: Permanently added 'github.com' (RSA) to the list
                 of known hosts.                                     )
+        > give version from local repo to remote repo
         > [[PUSH STRATEGIES]]
             which branches needed to be pushed?
             ` master: main branches, synchronized at every second
@@ -215,14 +216,13 @@ Basic functions of git:
             to build link between local branch and remote one;
         ` Use "git pull" to fetch branch. Solve conflict first if exists.
     """
-
-    git 
     
-    git pull origin main --allow-unrelated-histories
+    git pull <repo: origin> <branch: main> (--allow-unrelated-histories)
         > pull the content(files) on the remote repo before pushing 
             contents onto remote repo (avoid conflict of files)
         > some repo will call its origin as "skeleton", which is the 
             most important part.
+        > get version from remote repo to local repo
     
     git clone git@github.com:Account/repo_name.git <local_path>
         > clone a repo to local selected path from remote
@@ -234,6 +234,12 @@ Basic functions of git:
             Receiving objects: 100% (3/3), done.                    )
         > if the local path contains any special char, quote the WHOLE 
             local path with ""
+
+    git restore (--source=[commitID])
+        > restore files to the versions in the most recent commit
+            (recovery to the latest commit version)
+        > restore to the specific version (represent by commitID)
+        > get the version in local repo to working directory
 
     git rm <filename.filetype>
         > remove manually first then use this code is equivalent
