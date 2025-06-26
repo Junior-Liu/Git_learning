@@ -1,4 +1,5 @@
 1 Git codes explaination:
+
     git add <file>
         > type in the name of the file you want to 
             get into the load of submitting;
@@ -105,6 +106,61 @@
             working_directory.
         > "--" is IMOPRTANT!!! Otherwise: switch to other branch
     
+    git remote add <remote_repo_alias: origin> git@github.com:Account/repo_name.git
+        > IMPORTANT: ##[[relate a remote repo on Github]]##
+        > origin: alias of remote repo (self-determined, 
+            default origin)
+        > remote repo don't have to be same-named as local one.
+    
+    git remote -v
+        > run under local repo directory (uneffective otherwise)
+        > return the configuration of current remote repo:
+            (e.g.
+            $ git remote -v
+            origin git@github.com:Account/old-repo.git(fetch)
+            origin git@github.com:Account/old-repo.git(push)    )
+    
+    git remote rm origin
+        > remove the existing origin (usually for linking a new one)
+        > actually, the so-called "remove" is de-binding the relationship
+            between local and remote repo. The remote repo still 
+            physically exists and unchanged. To delete the remote:
+            delete it on Github website.
+    
+    git remote set-url <existing_origin> git@github.com:/Account/repo_name.git
+        > reset the existing origin to point to new repo url
+            (refresh the address of origin)
+    
+    git push -u origin <branch_name>
+        > push the local files onto the remote repo's selected branch
+            (usually default main/master)
+        > for the first push, "-u" is needed to bind the branch; 
+            after that, don't have to add -u
+        > Warnings of SSH usually occurs only at the first trial:
+            (e.g.
+            The authenticity of host 'github.com (xx.xx.xx.xx)' 
+                can't be established.
+            RSA key fingerprint is xx.xx.xx.xx.xx.
+            Are you sure you want to continue connecting (yes/no)?yes
+            Warning: Permanently added 'github.com' (RSA) to the list
+                of known hosts.                                     )
+    
+    git pull origin main --allow-unrelated-histories
+        > pull the content(files) on the remote repo before pushing 
+            contents onto remote repo (avoid conflict of files)
+    
+    git clone git@github.com:Account/repo_name.git <local_path>
+        > clone a repo to local selected path from remote
+        > usual output:
+            (e.g.
+            Cloning into 'gitskills'...
+            remote: Counting objects: 3, done.
+            remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 3
+            Receiving objects: 100% (3/3), done.                    )
+        > if the local path contains any special char, quote the WHOLE 
+            local path with ""
+
+
     rm <filename.filetype>
         > remove the selected file in stage 
             (equivalent to remove explicitly in laptop folder)
@@ -118,6 +174,24 @@
             mis-deleting. 
         > but CAUTION! Last change will discard. Only newest 
             version resumable.
+
+    cd <path>
+        > switch your path/directory to the selected 
+            path/directory
+    
+    ls -al <filename>
+        > read the file
+        > simply "ls" can also show the existing files in the current 
+            directory
+    
+    mkdir <directory_name>
+        > create a new directory
+        > add "-p" at the middle: create the parent folder if
+            it does not exist
+            (e.g.
+                mkdir -p <directory_name>               )
+    
+    cp <filename>  ?
 
 2 Git architecture:
     working directory (gong1 zuo4 qu1): 
