@@ -1,3 +1,10 @@
+Basic functions of git:
+# Version Modification and Management
+# Remote Repositories Management, Synchronization and clone
+# Branches Management
+# Labels Management
+
+
 1 Git codes explaination:
 
     git add <file>
@@ -56,7 +63,7 @@
             no reply will you derive.
         > q for quit - if the diff reading finished, tap q.
     
-    git log
+    git log (--graph --pretty=oneline --abbrev-commit)
         > bash will output the detailed changes in every
             version you submit the files, with commit id,
             author, date, and changes in the files.
@@ -68,6 +75,8 @@
                 #numbers:id_of_commit# remarks
                 #numbers:id_of_commit# remarks
              ...                                               )
+        > the options, if added, will make a graph-like branches figure,
+            easier and clearer for understanding
     
     git reset --<hard/soft> <HEAD^/HEAD~n>
         > --hard for resetting to last version committed state
@@ -131,11 +140,11 @@
         > reset the existing origin to point to new repo url
             (refresh the address of origin)
     
-    git push -u origin <branch_name>
+    git push (-u) <remote: origin> <branch_name>
         > push the local files onto the remote repo's selected branch
             (usually default main/master)
         > for the first push, "-u" is needed to bind the branch; 
-            after that, don't have to add -u
+            ||[Remarks: after that, don't have to add -u            ]
         > Warnings of SSH usually occurs only at the first trial:
             (e.g.
             The authenticity of host 'github.com (xx.xx.xx.xx)' 
@@ -144,10 +153,76 @@
             Are you sure you want to continue connecting (yes/no)?yes
             Warning: Permanently added 'github.com' (RSA) to the list
                 of known hosts.                                     )
+        > [[PUSH STRATEGIES]]
+            which branches needed to be pushed?
+            ` master: main branches, synchronized at every second
+            ` dev: development, every teammate works on it, synchronized
+                as well
+            ` bug: local debugging, no need
+            ` feature: depends on whether co-developing on it
+    
+    """
+    About teamwork - fetching: 
+        Same remote repo(master), multi-individual local repo. 
+        Most of the time, mates push their own amendments onto 
+            master & dev.
+        
+        A now clone repo to its local:
+            $ git clone git@github.com:Account/repo.git
+        By default, A can only see local master branch.
+        To develop with dev, A must create origin/dev to local:
+            $ git checkout -b dev origin/dev
+           ($ git checkout -b <branch_name> <remote/branch_name>    )
+        Now A can amend on dev and push to remote time by time
+            $ git add env.py
+            $ git commit -m "add env"
+            $ git push origin dev
+           ($ git push <remote/branch_name> <branch_name>           )
+
+        A has push amendment to origin/dev, while B also amend the same
+            file env.py, and try to push:
+            $ cat env.py
+            <content of env.py>
+            $ git add env.py
+            $ git commit -m "add new env"
+            $ git push origin dev
+            [ERROR: ......]
+        Push failed: CONFLICT with A's last push.
+        Sol.: use "git pull" to fetch the new upload from origin/dev, 
+            merge them (B's and A's) locally, then push again: 
+            $ git pull
+           ($ git pull <remote/branch_name> <branch_name>)
+        Failed again: have yet set link between local dev and origin/dev,
+            so need to set link between branches:
+            $ git branch --set-upstream-to=origin/dev dev
+           ($ git branch --set-upstream-to=<remote/branch_name> <branch_name>)
+        Then pull:
+            $ git pull
+        And merge the two amendment with conflicts:
+        After mergence, commit, then push:
+            $ git commit -m "fix env conflict"
+            $ git push origin dev
+        Success.
+
+    For short:
+        ` Use "git remote -v" check detailed info of remote;
+        ` New local branches, if not pushed, is invisible to others;
+        ` Use "git push <remote/branch_name> <branch_name>" to push,
+            if failed: use "git pull" to fetch new amend first;
+        ` Use "git checkkout -b <branch_name> <remote/branch_name>"
+            to create branch coresponding to remote branch;
+        ` Use "git branch --set-upstream-to=<remote/branch_name> <branch_name>"
+            to build link between local branch and remote one;
+        ` Use "git pull" to fetch branch. Solve conflict first if exists.
+    """
+
+    git 
     
     git pull origin main --allow-unrelated-histories
         > pull the content(files) on the remote repo before pushing 
             contents onto remote repo (avoid conflict of files)
+        > some repo will call its origin as "skeleton", which is the 
+            most important part.
     
     git clone git@github.com:Account/repo_name.git <local_path>
         > clone a repo to local selected path from remote
@@ -160,11 +235,6 @@
         > if the local path contains any special char, quote the WHOLE 
             local path with ""
 
-
-    rm <filename.filetype>
-        > remove the selected file in stage 
-            (equivalent to remove explicitly in laptop folder)
-    
     git rm <filename.filetype>
         > remove manually first then use this code is equivalent
             to git add <filename.filetype>
@@ -175,6 +245,110 @@
         > but CAUTION! Last change will discard. Only newest 
             version resumable.
 
+    git checkout -b der
+        > equivalent to the following two lines:
+            (e.g.
+            $ git branch dev
+            $ git checkout dev
+            Switched to branch 'dev'                    )
+        > use for creating and switching branches
+
+    git branch
+        > listing out all the branches with * at the front of the current
+        > if <new_branch_name> added behind: create a new branch
+            otherwise: check existing branches
+        > deleting branches: 
+            (e.g.
+                $ git branch -d <branch_name>                       )
+            ||[Remarks: branch information losses               ]
+            ||[Remarks: to discard an unmerged branch:
+                $ git branch -D <branch_name>                   ]
+        > before cerating a new branch (for fixxing a current bug),
+            while the work unfinished yet (thus cannot commit yet)
+            use: git stash to temp reserve the content
+
+    git checkout <branch_name>
+        > switch between branches
+    
+    git switch -c <branch_name>
+        > switch between branches (for new version of Git Bash)
+    
+    git merge <merge_strategy> (-m "message") <other_branch_name>
+        > merge the yield of other branch to current branch
+            (e.g.
+            (just finishing working on dev, now switch to master,
+                all the new yield becomes inversible now...)
+            $ git merge dev
+            Updating d46f35e..b17d20e
+            Fast-forward
+             readme.txt | 1 +
+            1 file changed, 1 insertion(+)
+            (now the yields are merged to master 
+            - master pointer moved ahead)                       )
+            ||[Remarks: here the fast-forward means moving master
+                pointer to the dev current commit. There also exists
+                other types of mergences.                       ]
+        > [[Merging Branches (ff):]]
+            when conflict occurs: editor will label out contents 
+                from different branches. Just edit it till you 
+                satisfy, then save it, add and commit.
+            conflict defused!
+            now master branch synchronized to dev branch
+            cover the dev branch information
+            usually delete unused branches (dev) by the way
+        > [[merge with --no-ff (NOT fast-forward):]]
+            reserve the branches information (the merged version
+                will NOT cover the dev last version)
+            (e.g.
+                $ git switch master
+                $ git merge --no-ff -m "merge with no ff" dev
+                ...                                             )
+        > [[Mergence Strategies:]]
+            usually: 
+                master:     most steady, release new version only
+                dev:        use for working (unsteady)
+                    (everyone works on dev and has their own branches,
+                    and merge their work onto dev from time to time)
+                feature:    develop a new feature/function (exxperimental)
+                    (if the feature branch eventually decided to be
+                    discard, discard it with -D (brute discarding))
+
+        > REMEMBER TO COMMIT YOUR DEBUG FOR MERGING
+    
+    git stash
+        > temp reserve the content
+        > working tree of current branch will be clean
+            (use "git status" to check it)
+    
+    git stash list
+        > check the content stash in the stash
+        > nothing can be seen after drop & pop
+    
+    git stash apply (stash@{i})
+        > recover the working content
+        > recover the appointed stash
+        > DO NOT delete content in stash after recovering
+    
+    git stash drop
+        > discard the content stocked in stash (DO NOT affect those 
+            recovered in the working place, only for those in stash)
+
+    git stash pop
+        > DO delete content in stash after recovering
+    
+    git cherry-pick <commit-id>
+        > pick the debug-commit and copy to current branch
+            (e.g.
+            (you've debug on master branch, now want to merge to dev, 
+                use git cherry-pick:)
+            $ git cherry-pick <commit-id>
+            [master <commit-id>] "message of the debug commit"
+             1 file changed, 1 insertation(+), 1 deletion(-)    )
+
+    rm <filename.filetype>
+        > remove the selected file in stage 
+            (equivalent to remove explicitly in laptop folder)
+    
     cd <path>
         > switch your path/directory to the selected 
             path/directory
@@ -192,6 +366,8 @@
                 mkdir -p <directory_name>               )
     
     cp <filename>  ?
+
+
 
 2 Git architecture:
     working directory (gong1 zuo4 qu1): 
